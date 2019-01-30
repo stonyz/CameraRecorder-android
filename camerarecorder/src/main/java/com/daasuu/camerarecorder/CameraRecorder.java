@@ -222,9 +222,10 @@ public class CameraRecorder {
      */
     public void start(final String filePath) {
         if (started) return;
+        final GlFilter filter = glPreviewRenderer.getFilter();
 
-
-        new Handler().post(new Runnable() {
+        Handler handler = new Handler();
+        handler.post(new Runnable() {
             @Override
             public void run() {
                 try {
@@ -243,7 +244,7 @@ public class CameraRecorder {
                             glSurfaceView.getMeasuredWidth(),
                             glSurfaceView.getMeasuredHeight(),
                             recordNoFilter,
-                            glPreviewRenderer.getFilter()
+                           null
                     );
                     if (!mute) {
                         // for audio capturing
@@ -261,6 +262,14 @@ public class CameraRecorder {
 
             }
         });
+
+        handler.post(new Runnable() {
+                         @Override
+                         public void run() {
+                             setFilter(filter);
+                         }
+                     }
+        );
 
         started = true;
     }
